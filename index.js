@@ -193,7 +193,7 @@ function generateMermaidHTML(mermaidCode, theme, version) {
         body {
             margin: 0;
             padding: 16px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            font-family: Arial, sans-serif;
             background: transparent;
             overflow: hidden;
         }
@@ -217,7 +217,6 @@ function generateMermaidHTML(mermaidCode, theme, version) {
 <body>
     <div class="mermaid">${escapeHtml(mermaidCode)}</div>
 
-
     <script>
         // 配置 Mermaid
         mermaid.initialize({
@@ -225,6 +224,9 @@ function generateMermaidHTML(mermaidCode, theme, version) {
             theme: '${theme}',
             securityLevel: 'strict',
             fontSize: 16,
+            themeVariables: {
+              fontFamily: 'Arial, sans-serif'
+            },
             flowchart: {
                 useMaxWidth: true,
                 htmlLabels: true
