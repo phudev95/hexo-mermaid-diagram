@@ -1,0 +1,403 @@
+<html><head><title>Test</title><style>
+    .mermaid-diagram-container {
+      margin: 1em 0;
+      position: relative;
+    }
+    
+    .mermaid-diagram-wrapper {
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .mermaid-diagram-fallback {
+      padding: 16px;
+      background-color: #f6f8fa;
+    }
+    
+    .mermaid-diagram-fallback summary {
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .mermaid-diagram-fallback pre {
+      margin: 0;
+      background: #fff;
+      border: 1px solid #e1e4e8;
+      border-radius: 3px;
+      padding: 12px;
+      overflow: auto;
+    }
+    
+    .mermaid-diagram-iframe-container {
+      position: relative;
+      width: 100%;
+      min-height: 200px;
+    }
+    
+    .mermaid-diagram-iframe {
+      width: 100%;
+      min-height: 200px;
+      border: none;
+      background: transparent;
+    }
+
+    /* 控制面板样式 */
+    .mermaid-viewer-grid-panel {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      display: grid;
+      grid-template-rows: repeat(3, 1fr);
+      gap: 4px;
+    }
+    
+    .mermaid-diagram-wrapper:hover .mermaid-viewer-grid-panel {
+      opacity: 1;
+    }
+    
+    .mermaid-viewer-grid-panel .grid-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+    
+    .mermaid-viewer-grid-panel .empty-cell {
+      width: 32px;
+      height: 32px;
+    }
+    
+    .mermaid-viewer-grid-panel .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(4px);
+    }
+    
+    .mermaid-viewer-grid-panel .btn:hover {
+      background: rgba(246, 248, 250, 0.95);
+      border-color: #8c959f;
+      transform: scale(1.05);
+    }
+    
+    .mermaid-viewer-grid-panel .btn:active {
+      transform: scale(0.95);
+    }
+    
+    .mermaid-viewer-grid-panel .btn svg {
+      fill: #656d76;
+    }
+    
+    .mermaid-viewer-grid-panel .btn:hover svg {
+      fill: #24292f;
+    }
+    
+    /* 加载状态 */
+    .mermaid-diagram-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      color: #586069;
+      font-style: italic;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .mermaid-diagram-wrapper {
+        border-radius: 3px;
+      }
+      
+      .mermaid-diagram-fallback {
+        padding: 12px;
+      }
+      
+      .mermaid-viewer-grid-panel {
+        opacity: 1; /* 在移动设备上始终显示控制按钮 */
+      }
+      
+      .mermaid-viewer-grid-panel .btn {
+        width: 28px;
+        height: 28px;
+      }
+    }
+    
+    /* 深色模式支持 */
+    @media (prefers-color-scheme: dark) {
+      .mermaid-diagram-wrapper {
+        border-color: #30363d;
+      }
+      
+      .mermaid-diagram-fallback {
+        background-color: #161b22;
+        color: #c9d1d9;
+      }
+      
+      .mermaid-diagram-fallback pre {
+        background: #0d1117;
+        border-color: #30363d;
+        color: #c9d1d9;
+      }
+      
+      .mermaid-viewer-grid-panel .btn {
+        background: rgba(33, 38, 45, 0.9);
+        border-color: #30363d;
+      }
+      
+      .mermaid-viewer-grid-panel .btn:hover {
+        background: rgba(48, 54, 61, 0.95);
+        border-color: #8b949e;
+      }
+      
+      .mermaid-viewer-grid-panel .btn svg {
+        fill: #8b949e;
+      }
+      
+      .mermaid-viewer-grid-panel .btn:hover svg {
+        fill: #c9d1d9;
+      }
+    }
+  </style></head>
+            <body>
+              <h1>测试页面</h1>
+              <p>下面是一个 mermaid 流程图：</p>
+              
+# 测试页面
+
+下面是一个 mermaid 流程图：
+
+
+      <div class="mermaid-diagram-container" data-index="0">
+        <div class="mermaid-diagram-wrapper">
+          <!-- 原始代码，用于非 JavaScript 环境 -->
+          <details class="mermaid-diagram-fallback">
+            <summary>View Mermaid diagram code</summary>
+            <pre><code class="language-mermaid">graph TD
+    A[Hard] --&gt;|Text| B(Round)
+    B --&gt; C{Decision}
+    C --&gt;|One| D[Result 1]
+    C --&gt;|Two| E[Result 2]</code></pre>
+          </details>
+          
+          <!-- iframe 容器，JavaScript 环境中显示 -->
+          <div class="mermaid-diagram-iframe-container" style="display: none;">
+            <!-- 九宫格控制面板 -->
+            <div class="mermaid-viewer-grid-panel">
+              <div class="grid-row">
+                <div class="empty-cell"></div>
+                <button class="btn up" aria-label="Pan up">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-chevron-up" aria-hidden="true">
+                    <path d="M3.22 10.53a.749.749 0 0 1 0-1.06l4.25-4.25a.749.749 0 0 1 1.06 0l4.25 4.25a.749.749 0 1 1-1.06 1.06L8 6.811 4.28 10.53a.749.749 0 0 1-1.06 0Z"></path>
+                  </svg>
+                </button>
+                <button class="btn zoom-in" aria-label="Zoom in">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-zoom-in" aria-hidden="true">
+                    <path d="M3.75 7.5a.75.75 0 0 1 .75-.75h2.25V4.5a.75.75 0 0 1 1.5 0v2.25h2.25a.75.75 0 0 1 0 1.5H8.25v2.25a.75.75 0 0 1-1.5 0V8.25H4.5a.75.75 0 0 1-.75-.75Z"></path>
+                    <path d="M7.5 0a7.5 7.5 0 0 1 5.807 12.247l2.473 2.473a.749.749 0 1 1-1.06 1.06l-2.473-2.473A7.5 7.5 0 1 1 7.5 0Zm-6 7.5a6 6 0 1 0 12 0 6 6 0 0 0-12 0Z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="grid-row">
+                <button class="btn left" aria-label="Pan left">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-chevron-left" aria-hidden="true">
+                    <path d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z"></path>
+                  </svg>
+                </button>
+                <button class="btn reset" aria-label="Reset view">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-sync" aria-hidden="true">
+                    <path d="M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z"></path>
+                  </svg>
+                </button>
+                <button class="btn right" aria-label="Pan right">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-chevron-right" aria-hidden="true">
+                    <path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="grid-row">
+                <div class="empty-cell"></div>
+                <button class="btn down" aria-label="Pan down">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-chevron-down" aria-hidden="true">
+                    <path d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z"></path>
+                  </svg>
+                </button>
+                <button class="btn zoom-out" aria-label="Zoom out">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-zoom-out" aria-hidden="true">
+                    <path d="M4.5 6.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1 0-1.5Z"></path>
+                    <path d="M0 7.5a7.5 7.5 0 1 1 13.307 4.747l2.473 2.473a.749.749 0 1 1-1.06 1.06l-2.473-2.473A7.5 7.5 0 0 1 0 7.5Zm7.5-6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <iframe class="mermaid-diagram-iframe" src="data:text/html;charset=utf-8,%3C!DOCTYPE%20html%3E%0A%3Chtml%3E%0A%3Chead%3E%0A%20%20%20%20%3Cmeta%20charset%3D%22utf-8%22%3E%0A%20%20%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1%22%3E%0A%20%20%20%20%3Ctitle%3EMermaid%20Diagram%3C%2Ftitle%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Fcdn.jsdelivr.net%2Fnpm%2Fmermaid%4011.12.2%2Fdist%2Fmermaid.min.js%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cstyle%3E%0A%20%20%20%20%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%2016px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-family%3A%20-apple-system%2C%20BlinkMacSystemFont%2C%20'Segoe%20UI'%2C%20Helvetica%2C%20Arial%2C%20sans-serif%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20background%3A%20transparent%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20overflow%3A%20hidden%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20.mermaid%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20cursor%3A%20pointer%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20transform-origin%3A%20center%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20transition%3A%20transform%200.2s%20ease%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F*%20%E5%93%8D%E5%BA%94%E5%BC%8F%E8%AE%BE%E8%AE%A1%20*%2F%0A%20%20%20%20%20%20%20%20%40media%20(max-width%3A%20768px)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%208px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%20%20%3Cdiv%20class%3D%22mermaid%22%3Egraph%20TD%0A%20%20%20%20A%5BHard%5D%20--%26gt%3B%7CText%7C%20B(Round)%0A%20%20%20%20B%20--%26gt%3B%20C%7BDecision%7D%0A%20%20%20%20C%20--%26gt%3B%7COne%7C%20D%5BResult%201%5D%0A%20%20%20%20C%20--%26gt%3B%7CTwo%7C%20E%5BResult%202%5D%3C%2Fdiv%3E%0A%20%20%20%20%0A%20%20%20%20%0A%20%20%20%20%3Cscript%3E%0A%20%20%20%20%20%20%20%20%2F%2F%20%E9%85%8D%E7%BD%AE%20Mermaid%0A%20%20%20%20%20%20%20%20mermaid.initialize(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20startOnLoad%3A%20false%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20theme%3A%20'default'%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20securityLevel%3A%20'strict'%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20fontSize%3A%2016%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20flowchart%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20useMaxWidth%3A%20true%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20htmlLabels%3A%20true%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%0A%20%20%20%20%20%20%20%20let%20currentScale%20%3D%201%3B%0A%20%20%20%20%20%20%20%20let%20currentTranslateX%20%3D%200%3B%0A%20%20%20%20%20%20%20%20let%20currentTranslateY%20%3D%200%3B%0A%20%20%20%20%20%20%20%20let%20diagramElement%20%3D%20null%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20%E5%BA%94%E7%94%A8%E5%8F%98%E6%8D%A2%0A%20%20%20%20%20%20%20%20function%20applyTransform()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20(diagramElement)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20diagramElement.style.transform%20%3D%20%60scale(%24%7BcurrentScale%7D)%20translate(%24%7BcurrentTranslateX%7Dpx%2C%20%24%7BcurrentTranslateY%7Dpx)%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20%E7%9B%91%E5%90%AC%E6%9D%A5%E8%87%AA%E7%88%B6%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%B6%88%E6%81%AF%0A%20%20%20%20%20%20%20%20window.addEventListener('message'%2C%20function(event)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20%7B%20type%2C%20action%20%7D%20%3D%20event.data%20%7C%7C%20%7B%7D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20(type%20%3D%3D%3D%20'mermaid-control')%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20switch%20(action)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'zoom-in'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentScale%20%3D%20Math.min(currentScale%20*%201.2%2C%203)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'zoom-out'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentScale%20%3D%20Math.max(currentScale%20%2F%201.2%2C%200.5)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'reset'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentScale%20%3D%201%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateX%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateY%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'pan-up'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateY%20%2B%3D%2020%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'pan-down'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateY%20-%3D%2020%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'pan-left'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateX%20%2B%3D%2020%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'pan-right'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateX%20-%3D%2020%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20%E6%B8%B2%E6%9F%93%E5%9B%BE%E8%A1%A8%0A%20%20%20%20%20%20%20%20async%20function%20renderDiagram()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20elements%20%3D%20document.querySelectorAll('.mermaid')%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20(let%20i%20%3D%200%3B%20i%20%3C%20elements.length%3B%20i%2B%2B)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20element%20%3D%20elements%5Bi%5D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20id%20%3D%20'mermaid-'%20%2B%20i%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20element.id%20%3D%20id%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20%7B%20svg%20%7D%20%3D%20await%20mermaid.render(id%20%2B%20'-svg'%2C%20element.textContent)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20element.innerHTML%20%3D%20svg%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20%E8%AE%BE%E7%BD%AE%E5%85%A8%E5%B1%80%E5%BC%95%E7%94%A8%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20(i%20%3D%3D%3D%200)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20diagramElement%20%3D%20element%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20%E8%B0%83%E6%95%B4%20iframe%20%E9%AB%98%E5%BA%A6%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20setTimeout(()%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20height%20%3D%20document.body.scrollHeight%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20window.parent.postMessage(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20'mermaid-resize'%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20height%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%20'*')%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%20100)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20(error)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error('Mermaid%20rendering%20error%3A'%2C%20error)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20document.body.innerHTML%20%3D%20'%3Cp%20style%3D%22color%3A%20red%3B%22%3EFailed%20to%20render%20diagram%3A%20'%20%2B%20error.message%20%2B%20'%3C%2Fp%3E'%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20%E5%90%AF%E5%8A%A8%E6%B8%B2%E6%9F%93%0A%20%20%20%20%20%20%20%20renderDiagram()%3B%0A%20%20%20%20%3C%2Fscript%3E%0A%3C%2Fbody%3E%0A%3C%2Fhtml%3E" frameborder="0" scrolling="no" sandbox="allow-scripts" loading="lazy">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    
+
+这是另一个序列图：
+
+
+      <div class="mermaid-diagram-container" data-index="1">
+        <div class="mermaid-diagram-wrapper">
+          <!-- 原始代码，用于非 JavaScript 环境 -->
+          <details class="mermaid-diagram-fallback">
+            <summary>View Mermaid diagram code</summary>
+            <pre><code class="language-mermaid">sequenceDiagram
+    participant Alice
+    participant Bob
+    Alice-&gt;&gt;Bob: Hello Bob, how are you?
+    Bob--&gt;&gt;Alice: Great!</code></pre>
+          </details>
+          
+          <!-- iframe 容器，JavaScript 环境中显示 -->
+          <div class="mermaid-diagram-iframe-container" style="display: none;">
+            <!-- 九宫格控制面板 -->
+            <div class="mermaid-viewer-grid-panel">
+              <div class="grid-row">
+                <div class="empty-cell"></div>
+                <button class="btn up" aria-label="Pan up">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-chevron-up" aria-hidden="true">
+                    <path d="M3.22 10.53a.749.749 0 0 1 0-1.06l4.25-4.25a.749.749 0 0 1 1.06 0l4.25 4.25a.749.749 0 1 1-1.06 1.06L8 6.811 4.28 10.53a.749.749 0 0 1-1.06 0Z"></path>
+                  </svg>
+                </button>
+                <button class="btn zoom-in" aria-label="Zoom in">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-zoom-in" aria-hidden="true">
+                    <path d="M3.75 7.5a.75.75 0 0 1 .75-.75h2.25V4.5a.75.75 0 0 1 1.5 0v2.25h2.25a.75.75 0 0 1 0 1.5H8.25v2.25a.75.75 0 0 1-1.5 0V8.25H4.5a.75.75 0 0 1-.75-.75Z"></path>
+                    <path d="M7.5 0a7.5 7.5 0 0 1 5.807 12.247l2.473 2.473a.749.749 0 1 1-1.06 1.06l-2.473-2.473A7.5 7.5 0 1 1 7.5 0Zm-6 7.5a6 6 0 1 0 12 0 6 6 0 0 0-12 0Z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="grid-row">
+                <button class="btn left" aria-label="Pan left">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-chevron-left" aria-hidden="true">
+                    <path d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z"></path>
+                  </svg>
+                </button>
+                <button class="btn reset" aria-label="Reset view">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-sync" aria-hidden="true">
+                    <path d="M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z"></path>
+                  </svg>
+                </button>
+                <button class="btn right" aria-label="Pan right">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-chevron-right" aria-hidden="true">
+                    <path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="grid-row">
+                <div class="empty-cell"></div>
+                <button class="btn down" aria-label="Pan down">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-chevron-down" aria-hidden="true">
+                    <path d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z"></path>
+                  </svg>
+                </button>
+                <button class="btn zoom-out" aria-label="Zoom out">
+                  <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-zoom-out" aria-hidden="true">
+                    <path d="M4.5 6.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1 0-1.5Z"></path>
+                    <path d="M0 7.5a7.5 7.5 0 1 1 13.307 4.747l2.473 2.473a.749.749 0 1 1-1.06 1.06l-2.473-2.473A7.5 7.5 0 0 1 0 7.5Zm7.5-6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <iframe class="mermaid-diagram-iframe" src="data:text/html;charset=utf-8,%3C!DOCTYPE%20html%3E%0A%3Chtml%3E%0A%3Chead%3E%0A%20%20%20%20%3Cmeta%20charset%3D%22utf-8%22%3E%0A%20%20%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1%22%3E%0A%20%20%20%20%3Ctitle%3EMermaid%20Diagram%3C%2Ftitle%3E%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Fcdn.jsdelivr.net%2Fnpm%2Fmermaid%4011.12.2%2Fdist%2Fmermaid.min.js%22%3E%3C%2Fscript%3E%0A%20%20%20%20%3Cstyle%3E%0A%20%20%20%20%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%2016px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-family%3A%20-apple-system%2C%20BlinkMacSystemFont%2C%20'Segoe%20UI'%2C%20Helvetica%2C%20Arial%2C%20sans-serif%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20background%3A%20transparent%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20overflow%3A%20hidden%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20.mermaid%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20cursor%3A%20pointer%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20transform-origin%3A%20center%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20transition%3A%20transform%200.2s%20ease%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F*%20%E5%93%8D%E5%BA%94%E5%BC%8F%E8%AE%BE%E8%AE%A1%20*%2F%0A%20%20%20%20%20%20%20%20%40media%20(max-width%3A%20768px)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20padding%3A%208px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%20%20%3Cdiv%20class%3D%22mermaid%22%3EsequenceDiagram%0A%20%20%20%20participant%20Alice%0A%20%20%20%20participant%20Bob%0A%20%20%20%20Alice-%26gt%3B%26gt%3BBob%3A%20Hello%20Bob%2C%20how%20are%20you%3F%0A%20%20%20%20Bob--%26gt%3B%26gt%3BAlice%3A%20Great!%3C%2Fdiv%3E%0A%20%20%20%20%0A%20%20%20%20%0A%20%20%20%20%3Cscript%3E%0A%20%20%20%20%20%20%20%20%2F%2F%20%E9%85%8D%E7%BD%AE%20Mermaid%0A%20%20%20%20%20%20%20%20mermaid.initialize(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20startOnLoad%3A%20false%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20theme%3A%20'default'%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20securityLevel%3A%20'strict'%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20fontSize%3A%2016%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20flowchart%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20useMaxWidth%3A%20true%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20htmlLabels%3A%20true%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%0A%20%20%20%20%20%20%20%20let%20currentScale%20%3D%201%3B%0A%20%20%20%20%20%20%20%20let%20currentTranslateX%20%3D%200%3B%0A%20%20%20%20%20%20%20%20let%20currentTranslateY%20%3D%200%3B%0A%20%20%20%20%20%20%20%20let%20diagramElement%20%3D%20null%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20%E5%BA%94%E7%94%A8%E5%8F%98%E6%8D%A2%0A%20%20%20%20%20%20%20%20function%20applyTransform()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20(diagramElement)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20diagramElement.style.transform%20%3D%20%60scale(%24%7BcurrentScale%7D)%20translate(%24%7BcurrentTranslateX%7Dpx%2C%20%24%7BcurrentTranslateY%7Dpx)%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20%E7%9B%91%E5%90%AC%E6%9D%A5%E8%87%AA%E7%88%B6%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%B6%88%E6%81%AF%0A%20%20%20%20%20%20%20%20window.addEventListener('message'%2C%20function(event)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20%7B%20type%2C%20action%20%7D%20%3D%20event.data%20%7C%7C%20%7B%7D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20(type%20%3D%3D%3D%20'mermaid-control')%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20switch%20(action)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'zoom-in'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentScale%20%3D%20Math.min(currentScale%20*%201.2%2C%203)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'zoom-out'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentScale%20%3D%20Math.max(currentScale%20%2F%201.2%2C%200.5)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'reset'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentScale%20%3D%201%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateX%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateY%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'pan-up'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateY%20%2B%3D%2020%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'pan-down'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateY%20-%3D%2020%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'pan-left'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateX%20%2B%3D%2020%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20'pan-right'%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentTranslateX%20-%3D%2020%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20applyTransform()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20%E6%B8%B2%E6%9F%93%E5%9B%BE%E8%A1%A8%0A%20%20%20%20%20%20%20%20async%20function%20renderDiagram()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20elements%20%3D%20document.querySelectorAll('.mermaid')%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20(let%20i%20%3D%200%3B%20i%20%3C%20elements.length%3B%20i%2B%2B)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20element%20%3D%20elements%5Bi%5D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20id%20%3D%20'mermaid-'%20%2B%20i%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20element.id%20%3D%20id%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20%7B%20svg%20%7D%20%3D%20await%20mermaid.render(id%20%2B%20'-svg'%2C%20element.textContent)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20element.innerHTML%20%3D%20svg%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20%E8%AE%BE%E7%BD%AE%E5%85%A8%E5%B1%80%E5%BC%95%E7%94%A8%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20(i%20%3D%3D%3D%200)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20diagramElement%20%3D%20element%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20%E8%B0%83%E6%95%B4%20iframe%20%E9%AB%98%E5%BA%A6%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20setTimeout(()%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20height%20%3D%20document.body.scrollHeight%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20window.parent.postMessage(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20'mermaid-resize'%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3A%20height%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%20'*')%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%20100)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20(error)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error('Mermaid%20rendering%20error%3A'%2C%20error)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20document.body.innerHTML%20%3D%20'%3Cp%20style%3D%22color%3A%20red%3B%22%3EFailed%20to%20render%20diagram%3A%20'%20%2B%20error.message%20%2B%20'%3C%2Fp%3E'%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20%E5%90%AF%E5%8A%A8%E6%B8%B2%E6%9F%93%0A%20%20%20%20%20%20%20%20renderDiagram()%3B%0A%20%20%20%20%3C%2Fscript%3E%0A%3C%2Fbody%3E%0A%3C%2Fhtml%3E" frameborder="0" scrolling="no" sandbox="allow-scripts" loading="lazy">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    
+
+结束
+          
+              <p>结束</p>
+            
+            
+          <script>
+    (function() {
+      // 检查是否支持 JavaScript
+      const containers = document.querySelectorAll('.mermaid-diagram-container');
+      
+      containers.forEach(container => {
+        const fallback = container.querySelector('.mermaid-diagram-fallback');
+        const iframeContainer = container.querySelector('.mermaid-diagram-iframe-container');
+        const iframe = container.querySelector('.mermaid-diagram-iframe');
+        
+        if (fallback && iframeContainer && iframe) {
+          // 隐藏 fallback，显示 iframe
+          fallback.style.display = 'none';
+          iframeContainer.style.display = 'block';
+          
+          // 监听 iframe 高度调整消息
+          const messageHandler = function(event) {
+            if (event.data && event.data.type === 'mermaid-resize') {
+              iframe.style.height = event.data.height + 'px';
+            }
+          };
+          
+          window.addEventListener('message', messageHandler);
+          
+          // 添加加载状态
+          const loadingDiv = document.createElement('div');
+          loadingDiv.className = 'mermaid-diagram-loading';
+          loadingDiv.textContent = 'Loading diagram...';
+          iframeContainer.appendChild(loadingDiv);
+          
+          // iframe 加载完成后移除加载状态
+          iframe.addEventListener('load', function() {
+            if (loadingDiv.parentNode) {
+              loadingDiv.parentNode.removeChild(loadingDiv);
+            }
+          });
+          
+          // 添加控制按钮事件监听器
+          const gridPanel = container.querySelector('.mermaid-viewer-grid-panel');
+          
+          if (gridPanel) {
+            gridPanel.addEventListener('click', function(e) {
+              const button = e.target.closest('button');
+              if (!button) return;
+              
+              let action = '';
+              if (button.classList.contains('zoom-in')) {
+                action = 'zoom-in';
+              } else if (button.classList.contains('zoom-out')) {
+                action = 'zoom-out';
+              } else if (button.classList.contains('reset')) {
+                action = 'reset';
+              } else if (button.classList.contains('up')) {
+                action = 'pan-up';
+              } else if (button.classList.contains('down')) {
+                action = 'pan-down';
+              } else if (button.classList.contains('left')) {
+                action = 'pan-left';
+              } else if (button.classList.contains('right')) {
+                action = 'pan-right';
+              }
+              
+              if (action) {
+                iframe.contentWindow.postMessage({
+                  type: 'mermaid-control',
+                  action: action
+                }, '*');
+              }
+            });
+          }
+        }
+      });
+    })();
+  </script></body></html>

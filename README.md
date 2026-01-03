@@ -22,15 +22,15 @@ npm install hexo-mermaid-diagram --save
 
 安装插件后，你可以在 Markdown 文件中直接使用 mermaid 代码块：
 
-```markdown
-​```mermaid
+````markdown
+​`mermaid
 graph TD
     A[Hard] -->|Text| B(Round)
     B --> C{Decision}
     C -->|One| D[Result 1]
     C -->|Two| E[Result 2]
-​```
-```
+​`
+````
 
 ## 配置
 
@@ -39,7 +39,7 @@ graph TD
 ```yaml
 mermaid_diagram:
   # Mermaid.js 版本
-  version: "10.6.1"
+  version: "11.12.2"
   # 主题配置
   theme: "default"
   # 自定义 CSS 类名

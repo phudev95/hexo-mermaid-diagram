@@ -28,17 +28,17 @@ npm link hexo-mermaid-diagram
 ```yaml
 # Mermaid Diagram 配置
 mermaid_diagram:
-  version: "10.6.1"    # Mermaid.js 版本
-  theme: "default"     # 主题: default, neutral, dark, forest, base
-  class_name: "mermaid-diagram"  # CSS 类名前缀
-  zoom: true          # 启用点击放大功能
+  version: "11.12.2" # Mermaid.js 版本
+  theme: "default" # 主题: default, neutral, dark, forest, base
+  class_name: "mermaid-diagram" # CSS 类名前缀
+  zoom: true # 启用点击放大功能
 ```
 
 ## 3. 使用插件
 
 在你的 Markdown 文件中使用 mermaid 代码块：
 
-```markdown
+````markdown
 ---
 title: 我的文章
 date: 2024-01-01
@@ -54,6 +54,7 @@ graph TD
     C --> E[结束]
     D --> E
 ```
+````
 
 # 时序图
 
@@ -65,7 +66,7 @@ sequenceDiagram
     系统-->>用户: 返回结果
 ```
 
-```
+````
 
 ## 4. 验证安装
 
@@ -74,7 +75,7 @@ sequenceDiagram
    hexo clean
    hexo generate
    hexo server
-   ```
+````
 
 2. 访问包含 mermaid 图表的页面
 
@@ -148,7 +149,7 @@ node test.js
       <summary>View Mermaid diagram code</summary>
       <pre><code class="language-mermaid">...</code></pre>
     </details>
-    
+
     <!-- iframe 渲染 -->
     <div class="mermaid-diagram-iframe-container">
       <iframe src="data:text/html;...">
