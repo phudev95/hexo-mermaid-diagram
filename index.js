@@ -1,14 +1,14 @@
 const cheerio = require("cheerio");
 
-// 注册 markdown 渲染器，处理 ```mermaid 语法
-// 设置高优先级 (9) 确保在其他插件之前执行
+// Register markdown renderer to handle ```mermaid syntax
+// Set high priority (9) to ensure execution before other plugins
 hexo.extend.filter.register(
   "before_post_render",
   function (data) {
     const config = this.config.mermaid_diagram || {};
 
     if (data.content) {
-      // 将 ```mermaid 代码块转换为 <pre class="mermaid">
+      // Convert ```mermaid code blocks to <pre class="mermaid">
       data.content = data.content.replace(
         /```mermaid\s*\n([\s\S]*?)\n```/g,
         function (match, code) {
@@ -23,7 +23,7 @@ hexo.extend.filter.register(
   9
 );
 
-// 注册插件
+// Register plugin
 hexo.extend.filter.register(
   "after_render:html",
   function (htmlContent) {
@@ -32,10 +32,10 @@ hexo.extend.filter.register(
     const theme = config.theme || "default";
     const className = config.class_name || "mermaid-diagram";
 
-    // 解析 HTML
+    // Parse HTML
     const $ = cheerio.load(htmlContent);
 
-    // 查找所有 mermaid 代码块（包括 ```mermaid 语法）
+    // Find all mermaid code blocks (including ```mermaid syntax)
     const mermaidBlocks = $(
       "pre code.language-mermaid, pre code.mermaid, pre.mermaid"
     );
@@ -46,33 +46,33 @@ hexo.extend.filter.register(
 
     let hasInjectedStyles = false;
 
-    mermaidBlocks.each((index, element) => {
+    mermaidBlocks.each((mermaidIndex, element) => {
       const $element = $(element);
       let $preElement, mermaidCode;
 
-      // 检查是否已被处理
+      // Check if already processed
       if ($element.closest(`.${className}-container`).length > 0) {
-        return; // 如果在容器内，则跳过
+        return; // Skip if inside container
       }
 
-      // 处理不同的 mermaid 代码块格式
+      // Handle different mermaid code block formats
       if ($element.hasClass("mermaid")) {
-        // 处理 <pre class="mermaid"> 格式
+        // Handle <pre class="mermaid"> format
         $preElement = $element;
         mermaidCode = $element.text().trim();
       } else {
-        // 处理 <pre><code class="language-mermaid"> 格式
+        // Handle <pre><code class="language-mermaid"> format
         $preElement = $element.parent("pre");
         mermaidCode = $element.text().trim();
       }
 
       if (!mermaidCode) return;
 
-      // 创建容器元素
+      // Create container element
       const containerHtml = `
-      <div class="${className}-container" data-index="${index}">
+      <div class="${className}-container" data-index="${mermaidIndex}">
         <div class="${className}-wrapper">
-          <!-- 原始代码，用于非 JavaScript 环境 -->
+          <!-- Original code for non-JavaScript environments -->
           <details class="${className}-fallback">
             <summary>View Mermaid diagram code</summary>
             <pre><code class="language-mermaid">${escapeHtml(
@@ -80,9 +80,9 @@ hexo.extend.filter.register(
             )}</code></pre>
           </details>
 
-          <!-- iframe 容器，JavaScript 环境中显示 -->
+          <!-- iframe container, displayed in JavaScript environments -->
           <div class="${className}-iframe-container" style="display: none;">
-            <!-- 九宫格控制面板 -->
+            <!-- Grid control panel -->
             <div class="mermaid-viewer-grid-panel">
               <div class="grid-row">
                 <div class="empty-cell"></div>
@@ -134,7 +134,7 @@ hexo.extend.filter.register(
             <iframe
               class="${className}-iframe"
               src="data:text/html;charset=utf-8,${encodeURIComponent(
-                generateMermaidHTML(mermaidCode, theme, version)
+                generateMermaidHTML(mermaidCode, theme, version, mermaidIndex)
               )}"
               frameborder="0"
               scrolling="no"
@@ -146,17 +146,17 @@ hexo.extend.filter.register(
       </div>
     `;
 
-      // 替换原始的 pre 元素
+      // Replace original pre element
       $preElement.replaceWith(containerHtml);
 
-      // 注入样式（只注入一次）
+      // Inject styles (only once)
       if (!hasInjectedStyles) {
         injectStyles($, className);
         hasInjectedStyles = true;
       }
     });
 
-    // 注入 JavaScript 逻辑
+    // Inject JavaScript logic
     if (mermaidBlocks.length > 0) {
       injectScript($, className);
     }
@@ -167,7 +167,7 @@ hexo.extend.filter.register(
 );
 
 /**
- * 转义 HTML 字符
+ * Escape HTML characters
  */
 function escapeHtml(text) {
   return text
@@ -179,9 +179,9 @@ function escapeHtml(text) {
 }
 
 /**
- * 生成 Mermaid iframe 的 HTML 内容
+ * Generate HTML content for Mermaid iframe
  */
-function generateMermaidHTML(mermaidCode, theme, version) {
+function generateMermaidHTML(mermaidCode, theme, version, mermaidIndex) {
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -206,7 +206,7 @@ function generateMermaidHTML(mermaidCode, theme, version) {
         }
 
 
-        /* 响应式设计 */
+        /* Responsive design */
         @media (max-width: 768px) {
             body {
                 padding: 8px;
@@ -218,7 +218,7 @@ function generateMermaidHTML(mermaidCode, theme, version) {
     <div class="mermaid">${escapeHtml(mermaidCode)}</div>
 
     <script>
-        // 配置 Mermaid
+        // Configure Mermaid
         mermaid.initialize({
             startOnLoad: false,
             theme: '${theme}',
@@ -233,20 +233,20 @@ function generateMermaidHTML(mermaidCode, theme, version) {
             }
         });
 
-        // 全局变量
+        // Global variables
         let currentScale = 1;
         let currentTranslateX = 0;
         let currentTranslateY = 0;
         let diagramElement = null;
 
-        // 应用变换
+        // Apply transform
         function applyTransform() {
             if (diagramElement) {
                 diagramElement.style.transform = \`scale(\${currentScale}) translate(\${currentTranslateX}px, \${currentTranslateY}px)\`;
             }
         }
 
-        // 监听来自父页面的消息
+        // Listen for messages from parent page
         window.addEventListener('message', function(event) {
             const { type, action } = event.data || {};
 
@@ -286,7 +286,7 @@ function generateMermaidHTML(mermaidCode, theme, version) {
             }
         });
 
-        // 渲染图表
+        // Render diagram
         async function renderDiagram() {
             try {
                 const elements = document.querySelectorAll('.mermaid');
@@ -298,30 +298,28 @@ function generateMermaidHTML(mermaidCode, theme, version) {
                     const { svg } = await mermaid.render(id + '-svg', element.textContent);
                     element.innerHTML = svg;
 
-                    // 设置全局引用
+                    // Set global reference
                     if (i === 0) {
                         diagramElement = element;
                     }
                 }
 
-                // 调整 iframe 高度
+                // Adjust iframe height
                 setTimeout(() => {
                     const height = document.body.scrollHeight;
                     window.parent.postMessage({
                         type: 'mermaid-resize',
-                        height: height
+                        height: height,
+                        mermaidIndex: ${mermaidIndex}
                     }, '*');
                 }, 100);
-
-
             } catch (error) {
                 console.error('Mermaid rendering error:', error);
                 document.body.innerHTML = '<p style="color: red;">Failed to render diagram: ' + error.message + '</p>';
             }
         }
 
-
-        // 启动渲染
+        // Start rendering
         renderDiagram();
     </script>
 </body>
@@ -329,7 +327,7 @@ function generateMermaidHTML(mermaidCode, theme, version) {
 }
 
 /**
- * 注入样式
+ * Inject styles
  */
 function injectStyles($, className) {
   const styleContent = `
@@ -378,7 +376,7 @@ function injectStyles($, className) {
       background: transparent;
     }
 
-    /* 控制面板样式 */
+    /* Control panel styles */
     .mermaid-viewer-grid-panel {
       position: absolute;
       bottom: 8px;
@@ -438,7 +436,7 @@ function injectStyles($, className) {
       fill: #24292f;
     }
 
-    /* 加载状态 */
+    /* Loading state */
     .${className}-loading {
       display: flex;
       align-items: center;
@@ -448,7 +446,7 @@ function injectStyles($, className) {
       font-style: italic;
     }
 
-    /* 响应式设计 */
+    /* Responsive design */
     @media (max-width: 768px) {
       .${className}-wrapper {
         border-radius: 3px;
@@ -459,48 +457,12 @@ function injectStyles($, className) {
       }
 
       .mermaid-viewer-grid-panel {
-        opacity: 1; /* 在移动设备上始终显示控制按钮 */
+        opacity: 1; /* Always show control buttons on mobile devices */
       }
 
       .mermaid-viewer-grid-panel .btn {
         width: 28px;
         height: 28px;
-      }
-    }
-
-    /* 深色模式支持 */
-    @media (prefers-color-scheme: dark) {
-      .${className}-wrapper {
-        border-color: #30363d;
-      }
-
-      .${className}-fallback {
-        background-color: #161b22;
-        color: #c9d1d9;
-      }
-
-      .${className}-fallback pre {
-        background: #0d1117;
-        border-color: #30363d;
-        color: #c9d1d9;
-      }
-
-      .mermaid-viewer-grid-panel .btn {
-        background: rgba(33, 38, 45, 0.9);
-        border-color: #30363d;
-      }
-
-      .mermaid-viewer-grid-panel .btn:hover {
-        background: rgba(48, 54, 61, 0.95);
-        border-color: #8b949e;
-      }
-
-      .mermaid-viewer-grid-panel .btn svg {
-        fill: #8b949e;
-      }
-
-      .mermaid-viewer-grid-panel .btn:hover svg {
-        fill: #c9d1d9;
       }
     }
   `;
@@ -509,47 +471,47 @@ function injectStyles($, className) {
 }
 
 /**
- * 注入 JavaScript 逻辑
+ * Inject JavaScript logic
  */
 function injectScript($, className) {
   const scriptContent = `
     (function() {
-      // 检查是否支持 JavaScript
+      // Check for JavaScript support
       const containers = document.querySelectorAll('.${className}-container');
 
-      containers.forEach(container => {
+      containers.forEach((container, mermaidContainerIndex) => {
         const fallback = container.querySelector('.${className}-fallback');
         const iframeContainer = container.querySelector('.${className}-iframe-container');
         const iframe = container.querySelector('.${className}-iframe');
 
         if (fallback && iframeContainer && iframe) {
-          // 隐藏 fallback，显示 iframe
+          // Hide fallback, show iframe
           fallback.style.display = 'none';
           iframeContainer.style.display = 'block';
 
-          // 监听 iframe 高度调整消息
+          // Listen for iframe height adjustment messages
           const messageHandler = function(event) {
-            if (event.data && event.data.type === 'mermaid-resize') {
+            if (event.data && event.data.type === 'mermaid-resize' && mermaidContainerIndex === event.data.mermaidIndex) {
               iframe.style.height = event.data.height + 'px';
             }
           };
 
           window.addEventListener('message', messageHandler);
 
-          // 添加加载状态
+          // Add loading state
           const loadingDiv = document.createElement('div');
           loadingDiv.className = '${className}-loading';
           loadingDiv.textContent = 'Loading diagram...';
           iframeContainer.appendChild(loadingDiv);
 
-          // iframe 加载完成后移除加载状态
+          // Remove loading state after iframe loads
           iframe.addEventListener('load', function() {
             if (loadingDiv.parentNode) {
               loadingDiv.parentNode.removeChild(loadingDiv);
             }
           });
 
-          // 添加控制按钮事件监听器
+          // Add event listeners for control buttons
           const gridPanel = container.querySelector('.mermaid-viewer-grid-panel');
 
           if (gridPanel) {
