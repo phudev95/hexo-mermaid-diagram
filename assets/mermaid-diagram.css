@@ -43,6 +43,43 @@
   background: transparent;
 }
 
+/* Toggle button styles */
+.mermaid-controls-toggle {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 11;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.mermaid-controls-toggle:hover {
+  background: rgba(246, 248, 250, 0.95);
+  border-color: #8c959f;
+  transform: scale(1.05);
+}
+
+.mermaid-controls-toggle:active {
+  transform: scale(0.95);
+}
+
+.mermaid-controls-toggle svg {
+  fill: #656d76;
+}
+
+.mermaid-controls-toggle:hover svg {
+  fill: #24292f;
+}
+
 /* Control panel styles */
 .mermaid-viewer-grid-panel {
   position: absolute;
@@ -58,6 +95,12 @@
 
 .mermaid-diagram-wrapper:hover .mermaid-viewer-grid-panel {
   opacity: 1;
+}
+
+/* Active state for toggle button */
+.mermaid-diagram-iframe-container.show-controls .mermaid-controls-toggle {
+  background: rgba(246, 248, 250, 0.95);
+  border-color: #0969da;
 }
 
 .mermaid-viewer-grid-panel .grid-row {
@@ -123,11 +166,32 @@
     padding: 12px;
   }
 
+  .mermaid-diagram-iframe-container {
+    padding-bottom: 25px;
+  }
+
+  /* Show toggle button on mobile */
+  .mermaid-controls-toggle {
+    display: flex;
+  }
+
+  /* Hide grid panel by default on mobile */
   .mermaid-viewer-grid-panel {
-    opacity: 1; /* Always show control buttons on mobile devices */
+    display: none;
+    bottom: 52px; /* Position above toggle button */
+  }
+
+  /* Show grid panel when toggled */
+  .mermaid-diagram-iframe-container.show-controls .mermaid-viewer-grid-panel {
+    display: grid;
   }
 
   .mermaid-viewer-grid-panel .btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .mermaid-viewer-grid-panel .empty-cell {
     width: 28px;
     height: 28px;
   }

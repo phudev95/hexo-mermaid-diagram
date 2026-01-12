@@ -48,6 +48,15 @@
         }
       });
 
+      // Add event listener for toggle button
+      const toggleButton = container.querySelector('.mermaid-controls-toggle');
+      if (toggleButton) {
+        toggleButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          iframeContainer.classList.toggle('show-controls');
+        });
+      }
+
       // Add event listeners for control buttons
       const gridPanel = container.querySelector('.mermaid-viewer-grid-panel');
 
