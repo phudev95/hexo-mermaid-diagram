@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mermaid Diagram</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 16px;
+            font-family: Arial, sans-serif;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        .mermaid {
+            text-align: center;
+            cursor: pointer;
+            transform-origin: center;
+            transition: transform 0.2s ease;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mermaid"></div>
+
+    <script>
+        // Global variables
+        let currentScale = 1;
+        let currentTranslateX = 0;
+        let currentTranslateY = 0;
+        let diagramElement = null;
+        let mermaidIndex = 0;
+
+        // Apply transform
+        function applyTransform() {
+            if (diagramElement) {
+                diagramElement.style.transform = `scale(${currentScale}) translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+            }
+        }
+
+        // Listen for messages from parent page
+        window.addEventListener('message', function(event) {
+            const { type, action, code, theme, index } = event.data || {};
+
+            if (type === 'mermaid-init') {
+                // Initialize diagram with code from parent
+                mermaidIndex = index || 0;
+                const element = document.querySelector('.mermaid');
+                element.textContent = code || '';
+                renderDiagram(theme || 'default');
+            } else if (type === 'mermaid-control') {
+                switch (action) {
+                    case 'zoom-in':
+                        currentScale = Math.min(currentScale * 1.2, 3);
+                        applyTransform();
+                        break;
+                    case 'zoom-out':
+                        currentScale = Math.max(currentScale / 1.2, 0.5);
+                        applyTransform();
+                        break;
+                    case 'reset':
+                        currentScale = 1;
+                        currentTranslateX = 0;
+                        currentTranslateY = 0;
+                        applyTransform();
+                        break;
+                    case 'pan-up':
+                        currentTranslateY += 20;
+                        applyTransform();
+                        break;
+                    case 'pan-down':
+                        currentTranslateY -= 20;
+                        applyTransform();
+                        break;
+                    case 'pan-left':
+                        currentTranslateX += 20;
+                        applyTransform();
+                        break;
+                    case 'pan-right':
+                        currentTranslateX -= 20;
+                        applyTransform();
+                        break;
+                }
+            }
+        });
+
+        // Wait for parent Mermaid to be ready
+        function waitForParentMermaid(callback) {
+            if (window.parent && window.parent.mermaid) {
+                callback(window.parent.mermaid);
+            } else {
+                setTimeout(function() {
+                    waitForParentMermaid(callback);
+                }, 50);
+            }
+        }
+
+        // Render diagram using parent's Mermaid
+        async function renderDiagram(theme) {
+            try {
+                waitForParentMermaid(async function(mermaid) {
+                    // Configure Mermaid (from parent)
+                    mermaid.initialize({
+                        startOnLoad: false,
+                        theme: theme,
+                        securityLevel: 'strict',
+                        fontSize: 16,
+                        themeVariables: {
+                          fontFamily: 'Arial, sans-serif'
+                        },
+                        flowchart: {
+                            useMaxWidth: true,
+                            htmlLabels: true
+                        }
+                    });
+
+                    const elements = document.querySelectorAll('.mermaid');
+                    for (let i = 0; i < elements.length; i++) {
+                        const element = elements[i];
+                        const id = 'mermaid-' + mermaidIndex + '-' + i;
+                        element.id = id;
+
+                        const { svg } = await mermaid.render(id + '-svg', element.textContent);
+                        element.innerHTML = svg;
+
+                        // Set global reference
+                        if (i === 0) {
+                            diagramElement = element;
+                        }
+                    }
+
+                    // Adjust iframe height
+                    setTimeout(() => {
+                        const height = document.body.scrollHeight;
+                        window.parent.postMessage({
+                            type: 'mermaid-resize',
+                            height: height,
+                            mermaidIndex: mermaidIndex
+                        }, '*');
+                    }, 100);
+                });
+            } catch (error) {
+                console.error('Mermaid rendering error:', error);
+                document.body.innerHTML = '<p style="color: red;">Failed to render diagram: ' + error.message + '</p>';
+            }
+        }
+
+        // Notify parent that iframe is ready
+        window.parent.postMessage({ type: 'mermaid-iframe-ready' }, '*');
+    </script>
+</body>
+</html>

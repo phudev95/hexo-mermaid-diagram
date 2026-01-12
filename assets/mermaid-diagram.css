@@ -1,0 +1,134 @@
+.mermaid-diagram-container {
+  margin: 1em 0;
+  position: relative;
+}
+
+.mermaid-diagram-wrapper {
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.mermaid-diagram-fallback {
+  padding: 16px;
+  background-color: #f6f8fa;
+}
+
+.mermaid-diagram-fallback summary {
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.mermaid-diagram-fallback pre {
+  margin: 0;
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 3px;
+  padding: 12px;
+  overflow: auto;
+}
+
+.mermaid-diagram-iframe-container {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+}
+
+.mermaid-diagram-iframe {
+  width: 100%;
+  min-height: 200px;
+  border: none;
+  background: transparent;
+}
+
+/* Control panel styles */
+.mermaid-viewer-grid-panel {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.mermaid-diagram-wrapper:hover .mermaid-viewer-grid-panel {
+  opacity: 1;
+}
+
+.mermaid-viewer-grid-panel .grid-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.mermaid-viewer-grid-panel .empty-cell {
+  width: 32px;
+  height: 32px;
+}
+
+.mermaid-viewer-grid-panel .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.mermaid-viewer-grid-panel .btn:hover {
+  background: rgba(246, 248, 250, 0.95);
+  border-color: #8c959f;
+  transform: scale(1.05);
+}
+
+.mermaid-viewer-grid-panel .btn:active {
+  transform: scale(0.95);
+}
+
+.mermaid-viewer-grid-panel .btn svg {
+  fill: #656d76;
+}
+
+.mermaid-viewer-grid-panel .btn:hover svg {
+  fill: #24292f;
+}
+
+/* Loading state */
+.mermaid-diagram-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: #586069;
+  font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .mermaid-diagram-wrapper {
+    border-radius: 3px;
+  }
+
+  .mermaid-diagram-fallback {
+    padding: 12px;
+  }
+
+  .mermaid-viewer-grid-panel {
+    opacity: 1; /* Always show control buttons on mobile devices */
+  }
+
+  .mermaid-viewer-grid-panel .btn {
+    width: 28px;
+    height: 28px;
+  }
+}

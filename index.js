@@ -1,4 +1,21 @@
 const cheerio = require("cheerio");
+const fs = require("fs");
+const path = require("path");
+
+// Copy iframe template to public directory after generation
+hexo.extend.filter.register("after_generate", function () {
+  const publicDir = this.public_dir;
+  const templatePath = path.join(__dirname, "assets", "mermaid-iframe-template.html");
+  const targetPath = path.join(publicDir, "mermaid-iframe.html");
+
+  // Ensure public directory exists
+  if (!fs.existsSync(publicDir)) {
+    fs.mkdirSync(publicDir, { recursive: true });
+  }
+
+  // Copy template file
+  fs.copyFileSync(templatePath, targetPath);
+});
 
 // Register markdown renderer to handle ```mermaid syntax
 // Set high priority (9) to ensure execution before other plugins
@@ -30,7 +47,6 @@ hexo.extend.filter.register(
     const config = this.config.mermaid_diagram || {};
     const version = config.version || "11.12.2";
     const theme = config.theme || "default";
-    const className = config.class_name || "mermaid-diagram";
 
     // Parse HTML
     const $ = cheerio.load(htmlContent);
@@ -51,7 +67,7 @@ hexo.extend.filter.register(
       let $preElement, mermaidCode;
 
       // Check if already processed
-      if ($element.closest(`.${className}-container`).length > 0) {
+      if ($element.closest(`.mermaid-diagram-container`).length > 0) {
         return; // Skip if inside container
       }
 
@@ -70,10 +86,10 @@ hexo.extend.filter.register(
 
       // Create container element
       const containerHtml = `
-      <div class="${className}-container" data-index="${mermaidIndex}">
-        <div class="${className}-wrapper">
+      <div class="mermaid-diagram-container" data-index="${mermaidIndex}">
+        <div class="mermaid-diagram-wrapper">
           <!-- Original code for non-JavaScript environments -->
-          <details class="${className}-fallback">
+          <details class="mermaid-diagram-fallback">
             <summary>View Mermaid diagram code</summary>
             <pre><code class="language-mermaid">${escapeHtml(
               mermaidCode
@@ -81,7 +97,7 @@ hexo.extend.filter.register(
           </details>
 
           <!-- iframe container, displayed in JavaScript environments -->
-          <div class="${className}-iframe-container" style="display: none;">
+          <div class="mermaid-diagram-iframe-container" style="display: none;">
             <!-- Grid control panel -->
             <div class="mermaid-viewer-grid-panel">
               <div class="grid-row">
@@ -132,13 +148,13 @@ hexo.extend.filter.register(
             </div>
 
             <iframe
-              class="${className}-iframe"
-              src="data:text/html;charset=utf-8,${encodeURIComponent(
-                generateMermaidHTML(mermaidCode, theme, version, mermaidIndex)
-              )}"
+              class="mermaid-diagram-iframe"
+              src="${config.root || '/'}mermaid-iframe.html"
+              data-mermaid-code="${escapeHtml(mermaidCode)}"
+              data-mermaid-theme="${theme}"
+              data-mermaid-index="${mermaidIndex}"
               frameborder="0"
               scrolling="no"
-              sandbox="allow-scripts"
               loading="lazy">
             </iframe>
           </div>
@@ -151,14 +167,14 @@ hexo.extend.filter.register(
 
       // Inject styles (only once)
       if (!hasInjectedStyles) {
-        injectStyles($, className);
+        injectStyles($, config);
         hasInjectedStyles = true;
       }
     });
 
     // Inject JavaScript logic
     if (mermaidBlocks.length > 0) {
-      injectScript($, className);
+      injectScript($, config);
     }
 
     return $.html();
@@ -179,375 +195,45 @@ function escapeHtml(text) {
 }
 
 /**
- * Generate HTML content for Mermaid iframe
- */
-function generateMermaidHTML(mermaidCode, theme, version, mermaidIndex) {
-  return `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mermaid Diagram</title>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@${version}/dist/mermaid.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 16px;
-            font-family: Arial, sans-serif;
-            background: transparent;
-            overflow: hidden;
-        }
-
-        .mermaid {
-            text-align: center;
-            cursor: pointer;
-            transform-origin: center;
-            transition: transform 0.2s ease;
-        }
-
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            body {
-                padding: 8px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="mermaid">${escapeHtml(mermaidCode)}</div>
-
-    <script>
-        // Configure Mermaid
-        mermaid.initialize({
-            startOnLoad: false,
-            theme: '${theme}',
-            securityLevel: 'strict',
-            fontSize: 16,
-            themeVariables: {
-              fontFamily: 'Arial, sans-serif'
-            },
-            flowchart: {
-                useMaxWidth: true,
-                htmlLabels: true
-            }
-        });
-
-        // Global variables
-        let currentScale = 1;
-        let currentTranslateX = 0;
-        let currentTranslateY = 0;
-        let diagramElement = null;
-
-        // Apply transform
-        function applyTransform() {
-            if (diagramElement) {
-                diagramElement.style.transform = \`scale(\${currentScale}) translate(\${currentTranslateX}px, \${currentTranslateY}px)\`;
-            }
-        }
-
-        // Listen for messages from parent page
-        window.addEventListener('message', function(event) {
-            const { type, action } = event.data || {};
-
-            if (type === 'mermaid-control') {
-                switch (action) {
-                    case 'zoom-in':
-                        currentScale = Math.min(currentScale * 1.2, 3);
-                        applyTransform();
-                        break;
-                    case 'zoom-out':
-                        currentScale = Math.max(currentScale / 1.2, 0.5);
-                        applyTransform();
-                        break;
-                    case 'reset':
-                        currentScale = 1;
-                        currentTranslateX = 0;
-                        currentTranslateY = 0;
-                        applyTransform();
-                        break;
-                    case 'pan-up':
-                        currentTranslateY += 20;
-                        applyTransform();
-                        break;
-                    case 'pan-down':
-                        currentTranslateY -= 20;
-                        applyTransform();
-                        break;
-                    case 'pan-left':
-                        currentTranslateX += 20;
-                        applyTransform();
-                        break;
-                    case 'pan-right':
-                        currentTranslateX -= 20;
-                        applyTransform();
-                        break;
-                }
-            }
-        });
-
-        // Render diagram
-        async function renderDiagram() {
-            try {
-                const elements = document.querySelectorAll('.mermaid');
-                for (let i = 0; i < elements.length; i++) {
-                    const element = elements[i];
-                    const id = 'mermaid-' + i;
-                    element.id = id;
-
-                    const { svg } = await mermaid.render(id + '-svg', element.textContent);
-                    element.innerHTML = svg;
-
-                    // Set global reference
-                    if (i === 0) {
-                        diagramElement = element;
-                    }
-                }
-
-                // Adjust iframe height
-                setTimeout(() => {
-                    const height = document.body.scrollHeight;
-                    window.parent.postMessage({
-                        type: 'mermaid-resize',
-                        height: height,
-                        mermaidIndex: ${mermaidIndex}
-                    }, '*');
-                }, 100);
-            } catch (error) {
-                console.error('Mermaid rendering error:', error);
-                document.body.innerHTML = '<p style="color: red;">Failed to render diagram: ' + error.message + '</p>';
-            }
-        }
-
-        // Start rendering
-        renderDiagram();
-    </script>
-</body>
-</html>`;
-}
-
-/**
  * Inject styles
  */
-function injectStyles($, className) {
-  const styleContent = `
-    .${className}-container {
-      margin: 1em 0;
-      position: relative;
-    }
+function injectStyles($, config) {
+  const cssCdn = config.css_cdn;
 
-    .${className}-wrapper {
-      border: 1px solid #e1e4e8;
-      border-radius: 6px;
-      overflow: hidden;
-      position: relative;
-    }
+  if (cssCdn) {
+    // Use CDN with preload
+    $("head").append(
+      `<link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="${cssCdn}">`
+    );
+    // Add noscript fallback for browsers without JavaScript
+    $("head").append(`<noscript><link rel="stylesheet" href="${cssCdn}"></noscript>`);
+  } else {
+    // Inject inline styles from separate file
+    const cssPath = path.join(__dirname, "assets", "mermaid-diagram.css");
+    const styleContent = fs.readFileSync(cssPath, "utf8");
 
-    .${className}-fallback {
-      padding: 16px;
-      background-color: #f6f8fa;
-    }
-
-    .${className}-fallback summary {
-      cursor: pointer;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .${className}-fallback pre {
-      margin: 0;
-      background: #fff;
-      border: 1px solid #e1e4e8;
-      border-radius: 3px;
-      padding: 12px;
-      overflow: auto;
-    }
-
-    .${className}-iframe-container {
-      position: relative;
-      width: 100%;
-      min-height: 200px;
-    }
-
-    .${className}-iframe {
-      width: 100%;
-      min-height: 200px;
-      border: none;
-      background: transparent;
-    }
-
-    /* Control panel styles */
-    .mermaid-viewer-grid-panel {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      z-index: 10;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      display: grid;
-      grid-template-rows: repeat(3, 1fr);
-      gap: 4px;
-    }
-
-    .${className}-wrapper:hover .mermaid-viewer-grid-panel {
-      opacity: 1;
-    }
-
-    .mermaid-viewer-grid-panel .grid-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
-    }
-
-    .mermaid-viewer-grid-panel .empty-cell {
-      width: 32px;
-      height: 32px;
-    }
-
-    .mermaid-viewer-grid-panel .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid #d0d7de;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      backdrop-filter: blur(4px);
-    }
-
-    .mermaid-viewer-grid-panel .btn:hover {
-      background: rgba(246, 248, 250, 0.95);
-      border-color: #8c959f;
-      transform: scale(1.05);
-    }
-
-    .mermaid-viewer-grid-panel .btn:active {
-      transform: scale(0.95);
-    }
-
-    .mermaid-viewer-grid-panel .btn svg {
-      fill: #656d76;
-    }
-
-    .mermaid-viewer-grid-panel .btn:hover svg {
-      fill: #24292f;
-    }
-
-    /* Loading state */
-    .${className}-loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 200px;
-      color: #586069;
-      font-style: italic;
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-      .${className}-wrapper {
-        border-radius: 3px;
-      }
-
-      .${className}-fallback {
-        padding: 12px;
-      }
-
-      .mermaid-viewer-grid-panel {
-        opacity: 1; /* Always show control buttons on mobile devices */
-      }
-
-      .mermaid-viewer-grid-panel .btn {
-        width: 28px;
-        height: 28px;
-      }
-    }
-  `;
-
-  $("head").append(`<style>${styleContent}</style>`);
+    $("head").append(`<style>${styleContent}</style>`);
+  }
 }
 
 /**
  * Inject JavaScript logic
  */
-function injectScript($, className) {
-  const scriptContent = `
-    (function() {
-      // Check for JavaScript support
-      const containers = document.querySelectorAll('.${className}-container');
+function injectScript($, config) {
+  const jsCdn = config.js_cdn;
+  const version = config.version || "11.12.2";
 
-      containers.forEach((container, mermaidContainerIndex) => {
-        const fallback = container.querySelector('.${className}-fallback');
-        const iframeContainer = container.querySelector('.${className}-iframe-container');
-        const iframe = container.querySelector('.${className}-iframe');
+  // Inject Mermaid library on parent page (loaded once, shared by all iframes)
+  $("head").append(`<script src="https://cdn.jsdelivr.net/npm/mermaid@${version}/dist/mermaid.min.js" defer></script>`);
 
-        if (fallback && iframeContainer && iframe) {
-          // Hide fallback, show iframe
-          fallback.style.display = 'none';
-          iframeContainer.style.display = 'block';
+  if (jsCdn) {
+    // Use CDN with defer
+    $("head").append(`<script src="${jsCdn}" defer></script>`);
+  } else {
+    // Inject inline script from separate file
+    const jsPath = path.join(__dirname, "assets", "mermaid-diagram.js");
+    const scriptContent = fs.readFileSync(jsPath, "utf8");
 
-          // Listen for iframe height adjustment messages
-          const messageHandler = function(event) {
-            if (event.data && event.data.type === 'mermaid-resize' && mermaidContainerIndex === event.data.mermaidIndex) {
-              iframe.style.height = event.data.height + 'px';
-            }
-          };
-
-          window.addEventListener('message', messageHandler);
-
-          // Add loading state
-          const loadingDiv = document.createElement('div');
-          loadingDiv.className = '${className}-loading';
-          loadingDiv.textContent = 'Loading diagram...';
-          iframeContainer.appendChild(loadingDiv);
-
-          // Remove loading state after iframe loads
-          iframe.addEventListener('load', function() {
-            if (loadingDiv.parentNode) {
-              loadingDiv.parentNode.removeChild(loadingDiv);
-            }
-          });
-
-          // Add event listeners for control buttons
-          const gridPanel = container.querySelector('.mermaid-viewer-grid-panel');
-
-          if (gridPanel) {
-            gridPanel.addEventListener('click', function(e) {
-              const button = e.target.closest('button');
-              if (!button) return;
-
-              let action = '';
-              if (button.classList.contains('zoom-in')) {
-                action = 'zoom-in';
-              } else if (button.classList.contains('zoom-out')) {
-                action = 'zoom-out';
-              } else if (button.classList.contains('reset')) {
-                action = 'reset';
-              } else if (button.classList.contains('up')) {
-                action = 'pan-up';
-              } else if (button.classList.contains('down')) {
-                action = 'pan-down';
-              } else if (button.classList.contains('left')) {
-                action = 'pan-left';
-              } else if (button.classList.contains('right')) {
-                action = 'pan-right';
-              }
-
-              if (action) {
-                iframe.contentWindow.postMessage({
-                  type: 'mermaid-control',
-                  action: action
-                }, '*');
-              }
-            });
-          }
-        }
-      });
-    })();
-  `;
-
-  $("body").append(`<script>${scriptContent}</script>`);
+    $("body").append(`<script>${scriptContent}</script>`);
+  }
 }
